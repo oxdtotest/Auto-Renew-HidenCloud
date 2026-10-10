@@ -555,11 +555,6 @@ def renew_service(page):
 
         log("🖱️ 准备点击 Renew 按钮...")
         renew_btn = page.locator('button:has-text("Renew")')
-        # 在点击 Create Invoice 之前加上：
-        try:
-            page.evaluate("document.getElementById('ncmp__tool')?.remove()")
-        except Exception:
-            pass
         create_btn = page.locator('button:has-text("Create Invoice")')
 
         modal_opened = False
@@ -607,6 +602,9 @@ def renew_service(page):
             log(f"🖱️ 点击 'Create Invoice'（第 {attempt + 1} 次）...")
             try:
                 create_btn.wait_for(state="visible", timeout=20000)
+                page.evaluate("document.getElementById('ncmp__tool')?.remove()")
+            except Exception:
+                pass
                 create_btn.click(timeout=20000)
             except Exception as e:
                 log(f"⚠️ 点击 Create Invoice 失败: {e}")
