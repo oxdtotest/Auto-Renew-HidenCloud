@@ -596,16 +596,20 @@ def renew_service(page):
             log("⚠️ Turnstile 未确认通过，仍将尝试提交...")
             page.screenshot(path="turnstile_timeout.png")
 
-        # 点击 Create Invoice；未跳转说明验证未通过/已过期，重做验证后再试
+       # 点击 Create Invoice；未跳转说明验证未通过/已过期，重做验证后再试
         new_invoice_url = None
         for attempt in range(6):
             log(f"🖱️ 点击 'Create Invoice'（第 {attempt + 1} 次）...")
             try:
+                # 1. 等待按钮可见
                 create_btn.wait_for(state="visible", timeout=20000)
+
+                # 2. 点击前把遮罩横幅删掉（无论有没有横幅都不影响继续执行）
                 page.evaluate("document.getElementById('ncmp__tool')?.remove()")
-            except Exception:
-                pass
+
+                # 3. 正常执行点击
                 create_btn.click(timeout=20000)
+
             except Exception as e:
                 log(f"⚠️ 点击 Create Invoice 失败: {e}")
                 solve_modal_turnstile(page, timeout=45)
