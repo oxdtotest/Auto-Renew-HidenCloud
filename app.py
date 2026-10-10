@@ -555,6 +555,11 @@ def renew_service(page):
 
         log("🖱️ 准备点击 Renew 按钮...")
         renew_btn = page.locator('button:has-text("Renew")')
+        # 在点击 Create Invoice 之前加上：
+        try:
+            page.evaluate("document.getElementById('ncmp__tool')?.remove()")
+        except Exception:
+            pass
         create_btn = page.locator('button:has-text("Create Invoice")')
 
         modal_opened = False
